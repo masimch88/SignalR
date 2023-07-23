@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+<div id="output" style="border:3px solid green; border-radius=10px">
+    THIS HERE
+</div>
+
+
+@section Scripts {
+
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+
+
+    <script>
+
+		const connection = new signalR.HubConnectionBuilder()
+			.configureLogging(signalR.LogLevel.Information)
+			.withUrl('https://localhost:44349/chatHub', {
+				transport: signalR.HttpTransportType.WebSockets,
+				skipNegotiation: true
+			})
+			.build();
+
+		connection.start().then(function () {
+			console.log('SignalR Connected!');
+		}).catch(function (err) {
+			return console.error(err.toString());
+		});
+
+		connection.on("ReceiveMessage", (serverMessage) => {
+			$('#output').append(`<div>${serverMessage}</div>`)
+		});
+
+	</script>
+}
